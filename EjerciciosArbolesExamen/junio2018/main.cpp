@@ -14,36 +14,34 @@ using namespace std;
   
 
 */
+void num_a_salvo_aux(const Arbin<char>& a, int& caballeros, int& mounstros, int& salvados) {
 
-void salvando(const Arbin<char>& a,int c,int &numSalvo, bool esDama) {
-	
 	if (a.esVacio()) {
-		numSalvo = 0;
+		salvados = 0;
 	}
-	else {
-		int numIz = 0, numDer = 0;
-		if (a.raiz() == 'C') c++;
-		else if (a.raiz() == 'M') c--;
-		else {
-			esDama = true;
-		}
-	
-		if (esDama && c >= 0) numSalvo++;
 
-		salvando(a.hijoDer(),c,numDer,esDama);
-		salvando(a.hijoIz(),c,numIz,esDama);
+	if (a.raiz() == 'M')
+		mounstros++;
 
-		numSalvo += numDer + numIz;
+	int caballerosIzq = 0, caballerosDer = 0;
 
-	}
-	
+	if (!a.hijoIz().esVacio())	num_a_salvo_aux(a.hijoIz(), caballerosIzq, mounstros, salvados);
+	if (!a.hijoDer().esVacio()) num_a_salvo_aux(a.hijoDer(), caballerosDer, mounstros, salvados);
+
+	caballeros = caballerosIzq + caballerosDer;
+
+	if (a.raiz() == 'C')
+		caballeros++;
+	if (a.raiz() == 'M')
+		mounstros--;
+	else if (caballeros >= mounstros && a.raiz() == 'D')
+		salvados++;
 }
 int num_a_salvo(const Arbin<char>& a) {
 	/*** A IMPLEMENTAR ***/
-	int s = 0, c = 0,m=0;
-	bool dama = false;
-	salvando(a,c,s,dama);
-	return s;
+	int caballeros = 0, mounstros = 0, salvados = 0;
+	if (!a.esVacio()) num_a_salvo_aux(a, caballeros, mounstros, salvados);
+	return salvados;
 }
 
 
