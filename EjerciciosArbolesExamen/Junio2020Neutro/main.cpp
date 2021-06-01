@@ -13,12 +13,12 @@ using namespace std;
 ([1]5#)
 (#5[3])
 ([9]2([2]1#))
-([9]2([2] - 1#))
-((# - 1[2])2[9])
+([9]2([2]-1#))
+((#-1[2])2[9])
 (([2]2[-2])4(#1[10]))
-(([2] - 2[-2])4[10])
+(([2]-2[-2])4[10])
 ((([10]2[-10])3#)6(#3([10]2[10])))
-((([1]1#) - 1#)10(#1(# - 1[1])))
+((([1]1#)-1#)10(#1(#-1[1])))
 
 Salida asociada
 ============== =
@@ -41,43 +41,38 @@ Salida asociada
 bool esHoja(const Arbin<int>& a) {
 	return !a.esVacio() && a.hijoDer().esVacio() && a.hijoIz().esVacio();
 }
+//0(n) ya que recorre 1 sola vez los nodos del arbol
+void nuemero_neutro_aux(const Arbin<int>& a, int& neutroTotales, int& nodo) {
 
-void nuemero_neutro_aux(const Arbin<int>& a,unsigned int& nodosenutros,unsigned int& contadorneutros) {
-
-	unsigned int nodosI = 0, nodoDer=0;
-	//int cont = 0;
-	//Si es hoja va incluido en la recursión
-	if (a.esVacio()) contadorneutros = 0;
-	else {
-		if (!a.hijoDer().esVacio()) nuemero_neutro_aux(a.hijoDer(), nodoDer, contadorneutros);
-		if (!a.hijoIz().esVacio())  nuemero_neutro_aux(a.hijoDer(), nodosI, contadorneutros);
-
-		if (nodoDer == nodosI) 
-			contadorneutros++;
-
-		if (a.raiz() > 0)
-			nodosenutros++;
-
-		
-		nodosenutros += (nodoDer + nodosI ) + (a.raiz() > 0);
-
+	if (a.esVacio()) {
+		neutroTotales = 0;
+		nodo = 0;
 	}
 
-	
+	else {
+		int nodoD = 0, nodoI = 0;
+
+		if (!a.hijoDer().esVacio())
+			nuemero_neutro_aux(a.hijoDer(), neutroTotales, nodoD);
+		if (!a.hijoIz().esVacio())
+			nuemero_neutro_aux(a.hijoIz(), neutroTotales, nodoI);
+
+		if (nodoD == nodoI) neutroTotales++;
+
+		if (a.raiz() > 0) nodo++;
+
+		nodo += nodoD + nodoI;
+	}
+
 }
+
 unsigned int numero_neutros(const Arbin<int>& a) {
 	// A IMPLEMENTAR
-	unsigned int nodos = 0, contar = 0;
-	if (!a.esVacio()) {
-		nuemero_neutro_aux(a, nodos, contar);
-		return contar;
-	}
-	else
-		return 0;
-	
+	int nodos = 0, contar = 0;
+	if (a.esVacio()) return 0;
+	nuemero_neutro_aux(a, contar, nodos);
+	return contar;
 }
-
-
 
 
 Arbin<int> lee_arbol(istream& in) {
@@ -88,7 +83,7 @@ Arbin<int> lee_arbol(istream& in) {
 	case '[': {
 		int raiz;
 		in >> raiz;
-  		in >> c;
+		in >> c;
 		return Arbin<int>(raiz);
 	}
 	case '(': {
@@ -106,7 +101,7 @@ Arbin<int> lee_arbol(istream& in) {
 
 int main() {
 	Arbin<int> arbol;
-	while (cin.peek() != EOF)  {
+	while (cin.peek() != EOF) {
 		Arbin<int> a = lee_arbol(cin);
 		cout << numero_neutros(a) << endl;
 		string resto_linea;
