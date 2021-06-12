@@ -20,7 +20,7 @@ bool esHoja(Arbin<int> a) {
 //Coste O(n) ya que solo recorremos cada nodo 1 vez
 void  esRentableAux(Arbin<int> a, int ancestros, int& renta_maxima, bool &rentable) {
 	
-	int rentaIzq = 0, rentaDer = 0, ancestrosDer = 0, ancestrosIz = 0;
+	int rentaIzq = 0, rentaDer = 0;
 	if (a.esVacio()) {
 		rentable = false;
 		renta_maxima = 0;
@@ -32,16 +32,15 @@ void  esRentableAux(Arbin<int> a, int ancestros, int& renta_maxima, bool &rentab
 	}
 
 	else {
-
-		rentable = (ancestros + a.raiz() > 0 && a.raiz() > 0);
-
-		esRentableAux(a.hijoIz(), ancestros + a.raiz(), rentaIzq,rentable);
+	
+		rentable = (ancestros + a.raiz() > 0);
+		esRentableAux(a.hijoIz(), ancestros + a.raiz(), rentaIzq, rentable);
 		esRentableAux(a.hijoDer(), ancestros + a.raiz(), rentaDer, rentable);
-
+	
 		renta_maxima = max_renta(rentaDer, rentaIzq);
-	
+
+
 	}
-	
 
 }
 
