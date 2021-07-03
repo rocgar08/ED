@@ -50,7 +50,9 @@ Tipo que representa el grado de gravedad de un
 paciente.
 */
 typedef enum{LEVE,NORMAL,GRAVE} Gravedad;
+typedef Lista<CodigoPaciente> ::Iterator Posicion;
 
+const int static tPosicion = 3;
 
 /** 
 RECUERDA QUE PUEDES DEFINIR AQUI TODAS LAS CLASES
@@ -58,16 +60,17 @@ Y TIPOS ADICIONALES QUE CONSIDERES OPORTUNO
 */
 class InfoPaciente {
 public:
+	Posicion _pos;
 	InfoPaciente();
 	InfoPaciente(const Paciente& paciente, 
-		Gravedad gravedad,const Lista<CodigoPaciente>::Iterator& pos) :
-		_paciente(paciente), _gravedad(gravedad),_pos(pos){};
+		Gravedad gravedad,const Posicion pos) :
+		_paciente(paciente),_gravedad(gravedad),_pos(pos){};
 	const Paciente& datos() const;
 	const Gravedad& gravedades() const;
 private:
 	Paciente _paciente;
 	Gravedad _gravedad;
-	Lista<CodigoPaciente>::Iterator _pos;
+
 	
 
 };
@@ -141,8 +144,10 @@ public:
 private:
   // Debe elegirse la representación más adecuada para implementar
   // eficientemente este TAD
-	DiccionarioHash<CodigoPaciente, InfoPaciente> _info;
-	Lista<CodigoPaciente> _graves[3];
+	DiccionarioHash<CodigoPaciente, InfoPaciente> _pacientes;
+	//Gravedad g;
+	Lista<CodigoPaciente> _esperas[3];
+	
 };
 
 #endif

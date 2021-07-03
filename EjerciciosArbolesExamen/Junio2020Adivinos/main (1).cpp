@@ -11,27 +11,25 @@ bool esHoja(const Arbin<int>& a) {
 /** Indica aqu�, razonadamente, la complejidad de numero_neutros
   La complejida es O(n) ya que solo se recorren los nodos una sola vez.
 */
-void numero_adivinos_aux(const Arbin<int>& a, int& nodosAdivinos, int& adivinosTotales) {
-
-	int adivinosIzq = 0, adivinosDer = 0, nodosIzq = 0, nodosDer = 0;
-
+void numero_adivinos_aux(const Arbin<int>& a, int& nodos, int& adivinosTotales) {
+	int nodoI = 0, nodoD = 0;
 	if (a.esVacio() && esHoja(a)) {
-		nodosAdivinos = 0;
+		nodos = 0;
 		adivinosTotales = 0;
 	}
 
 	else {
 
-		if (!a.hijoIz().esVacio()) numero_adivinos_aux(a.hijoIz(), nodosIzq,adivinosIzq);
-		if (!a.hijoDer().esVacio()) numero_adivinos_aux(a.hijoDer(), nodosDer, adivinosDer);
+		if (!a.hijoIz().esVacio()) numero_adivinos_aux(a.hijoIz(), nodoI, adivinosTotales);
+		if (!a.hijoDer().esVacio()) numero_adivinos_aux(a.hijoDer(), nodoD, adivinosTotales);
 
-		nodosAdivinos = nodosIzq + nodosDer;
+		nodos = nodoI + nodoD;
 
-		if (a.raiz() % 2 == 0) nodosAdivinos++;
+		if (a.raiz() % 2 == 0) nodos++;
 	}
+
+	if (a.raiz() == nodoD + nodoI) adivinosTotales++;
 	
-	adivinosTotales = adivinosIzq + adivinosDer + (a.raiz() == nodosDer + nodosIzq);
-	 
 }
 
 unsigned int numero_adivinos(const Arbin<int>& a) {

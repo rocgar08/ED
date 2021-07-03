@@ -66,30 +66,29 @@ public:
 
 		// A IMPLEMENTAR
 		if (esVacia() || longitud() < pos || pos <= 0) throw EPosicionInvalida();
-		else {
-			Nodo* ini = _prim;
-			Nodo* it = _prim;
-			for (int i = 1; i < longitud(); i++)
-			{
-				ini = it; //levamos el anterior
-				it = ini->_sig; //el actual
-				if (i + 1 == pos && pos != 1) {//usamos la i como contador y sabemos que cambia de pos a partir de la 2º
-					if (pos == longitud()) { //cuando el elemento que cambiamos es el ultimo
-						_ult->_sig = _prim; //Lo podemos hacer así por es una cola circular
-						_ult = ini;
-						_prim = it;
-						_ult->_sig = NULL;
-					}
-					else {//Cuando son los elementos intermedios
-						Nodo* aux = _prim;
-						_prim = ini->_sig;
-						ini->_sig = it->_sig;
-						it->_sig = aux;
-					}
-				}
+
+		unsigned int cont = 1;
+		Nodo* ant = _prim;
+		Nodo* aMover = NULL;
+		if (pos > 1) { //Si la posicion es 1 no se hace nada
+			while (cont < pos) {
+				if (cont == pos - 1) aMover = ant->_sig; //guardo el elemento a mover
+				else ant = ant->_sig; //actualizo el valor de actual 
+				cont++;
+			}//while
+
+			if (aMover == _ult) { // 1 2 3 4 5 -1 5
+				_ult = ant;
+				_ult->_sig = NULL;
+			}
+			else {
+				ant->_sig = aMover->_sig;
 			}
 
+			aMover->_sig = _prim;
+			_prim = aMover;
 		}
+
 
 	}
 	/** Constructor; operacion ColaVacia */

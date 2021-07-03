@@ -62,12 +62,12 @@ GestionAdmisiones::GestionAdmisiones() {
 void GestionAdmisiones::an_paciente(CodigoPaciente codigo, const string& nombre, unsigned int edad, const string& sintomas, Gravedad gravedad) {
 	// A IMPLEMENTAR
 	
-	if(_info.contiene(codigo)) throw EPacienteDuplicado(); //O(1)
+	if(_pacientes.contiene(codigo)) throw EPacienteDuplicado(); //O(1)
 	
-	_graves[gravedad].pon_ppio(codigo);
-	_info.inserta(codigo, InfoPaciente(
+	_esperas[gravedad].pon_ppio(codigo);
+	_pacientes.inserta(codigo, InfoPaciente(
 		Paciente(nombre,edad,sintomas),
-		gravedad,_graves[gravedad].begin())
+		gravedad,_esperas[gravedad].begin())
 	);//O(1)
 
 	
@@ -79,13 +79,14 @@ void GestionAdmisiones::an_paciente(CodigoPaciente codigo, const string& nombre,
 */
 void GestionAdmisiones::info_paciente(CodigoPaciente codigo, string& nombre, unsigned int& edad, string& sintomas) const {
 	// A IMPLEMENTAR
-	DiccionarioHash<CodigoPaciente, InfoPaciente> ::ConstIterator it = _info.cbusca(codigo); //O(1)
+	DiccionarioHash<CodigoPaciente, InfoPaciente> ::ConstIterator it = _pacientes.cbusca(codigo); //O(1)
 
-	if (it == _info.cend()) throw EPacienteNoExiste(); //cte
+	if (it == _pacientes.cend()) throw EPacienteNoExiste(); //cte
 	
 	nombre = it.valor().datos().nombre();
 	edad = it.valor().datos().edad();
 	sintomas = it.valor().datos().sintomas();
+	
 	
 	
 }
@@ -96,27 +97,20 @@ void GestionAdmisiones::info_paciente(CodigoPaciente codigo, string& nombre, uns
 
 void GestionAdmisiones::siguiente(CodigoPaciente& codigo, Gravedad& gravedad) const {
 	// A IMPLEMENTAR
-
-	if (!hay_pacientes()) throw EPacienteNoExiste();
 	
-	if (!_graves->esVacia()) {
+	if (!_esperas[GRAVE].esVacia()) {
+		codigo = _esperas[GRAVE].ultimo();
+		gravedad = GRAVE;
+	}
 
-		if (!_graves[GRAVE].esVacia()) {
-			codigo = _graves[GRAVE].primero();
-			gravedad = GRAVE;
-		}
+	else if (!_esperas[NORMAL].esVacia()) {
+		codigo = _esperas[NORMAL].ultimo();
+		gravedad = NORMAL;
+	}
 
-
-
-		else if (!_graves[NORMAL].esVacia()) {
-			codigo = _graves[NORMAL].primero();
-			gravedad = NORMAL;
-		}
-
-		else {
-			codigo = _graves[LEVE].primero();
-			gravedad = LEVE;
-		}
+	else {
+		codigo = _esperas[LEVE].ultimo();
+		gravedad = LEVE;
 	}
 }
 
@@ -125,7 +119,7 @@ void GestionAdmisiones::siguiente(CodigoPaciente& codigo, Gravedad& gravedad) co
 */
 bool GestionAdmisiones::hay_pacientes() const {  
 	// A IMPLEMENTAR
-	return (!_graves->esVacia());
+	return (!_esperas[3].esVacia());
 }
 
 /**
@@ -133,17 +127,15 @@ bool GestionAdmisiones::hay_pacientes() const {
 */
 void GestionAdmisiones::elimina(CodigoPaciente codigo) {
 
-	DiccionarioHash<CodigoPaciente, InfoPaciente> ::Iterator it = _info.busca(codigo);
+	DiccionarioHash<CodigoPaciente, InfoPaciente> ::Iterator it = _pacientes.busca(codigo);
 
-	if (it == _info.end()) throw EPacienteNoExiste(); //Si no está en el diccionario
+	if (it == _pacientes.end()) throw EPacienteNoExiste(); //Si no está en el diccionario
 	if (hay_pacientes()){
-		Lista<CodigoPaciente> ::Iterator ini = _graves->begin();
-			if(ini!=_graves->end()) {
-				if(ini.elem() == codigo)
-					_graves->eliminar(ini);
-				else ini.next();
+		Lista<CodigoPaciente> ::Iterator ini = _esperas[it.valor().gravedades()].begin();
+		if (ini != _esperas[it.valor().gravedades()].end()) {
+			_esperas[it.valor().gravedades()].eliminar(it.valor()._pos);
+			_pacientes.borra(codigo);
 		}
-		_info.borra(codigo);
 	}
 	
 }
