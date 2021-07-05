@@ -9,20 +9,21 @@ bool esHoja(const Arbin<int>& a) {
 	return !a.esVacio() && a.hijoIz().esVacio() && a.hijoDer().esVacio();
 }
 //O(n)
-unsigned int numHojasProfundas(Arbin<int> a, unsigned int k, unsigned cont) {
+unsigned int numHojasProfundas(Arbin<int> a, unsigned int k, unsigned NIVEL) {
 
 	if (a.esVacio()) return 0;
 	else if (esHoja(a)) {
-		if (cont > k) return 1;
+		if (NIVEL > k) return 1;
 	}
-	return numHojasProfundas(a.hijoDer(), k, cont + 1) + numHojasProfundas(a.hijoIz(), k, cont + 1);
+	else 
+		return numHojasProfundas(a.hijoDer(), k, NIVEL + 1) + numHojasProfundas(a.hijoIz(), k, NIVEL + 1);
 
 }
 
 unsigned int numero_hojas_mas_profundas_que(Arbin<int> a, unsigned int k) {
 	// A IMPLEMENTAR
-	unsigned cont = 1;
-	return numHojasProfundas(a, k, cont);
+	unsigned nivel = 1;
+	return numHojasProfundas(a, k, nivel);
 }
 
 Arbin<int> lee_arbol(istream& in) {

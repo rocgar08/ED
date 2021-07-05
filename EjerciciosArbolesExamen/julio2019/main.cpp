@@ -25,28 +25,29 @@ algoritmo.
 bool esHoja(Arbin<int> a) {
 	return !a.esVacio() && a.hijoDer().esVacio() && a.hijoIz().esVacio();
 }
-unsigned int sumativos(Arbin<int> a, int suma_ac, int& cuenta) {
+unsigned int sumativos(Arbin<int> a,int& cuenta) {
 	
-	int valor = 0;
+	int valor = 0, vI = 0, vD = 0;
 
 	if (a.esVacio()) return 0;
 	else {
 
-		valor = sumativos(a.hijoIz(), suma_ac, cuenta) + sumativos(a.hijoDer(), suma_ac, cuenta);
-
+		vI = sumativos(a.hijoIz(), cuenta);
+		vD = sumativos(a.hijoDer(), cuenta);
+		valor = vD + vI;
 		if (a.raiz() == valor) {
 			cuenta++;
 		}
 	}
 	
-	return suma_ac + a.raiz();
+	return vD + a.raiz();
 }
 unsigned int numNodosSumativos (Arbin<int> a) {
 	/* A IMPLEMENTAR */
 
 	if (a.esVacio()) return 0;
 	int cuenta = 0;
-	sumativos(a, 0, cuenta);
+	sumativos(a,cuenta);
 	return cuenta;
 }
 
